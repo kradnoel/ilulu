@@ -1,2 +1,2 @@
-# ilulu-api
-Ilulu Backend API Server
+# ilulu
+Ilulu Project
