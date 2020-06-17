@@ -2,8 +2,8 @@
 const express = require('express');
 const routes = express.Router();
 
-const visitante = require('./visitante');
+const visitor = require('./visitor');
 
-routes.use("/visitantes", visitante);
+routes.use("/visitors", visitor);
 
 module.exports = routes;

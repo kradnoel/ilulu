@@ -1,23 +1,35 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+//const Sequelize = require('sequelize');
 
-let dbConfig = require('../config/db.config');
+//let dbConfig = require('../config/db.config');
 
-let sequelize = new Sequelize({
-  dialect: dbConfig.dialect,
-  storage: dbConfig.storage
-});
+//let sequelize = new Sequelize({
+//  dialect: dbConfig.dialect,
+//  storage: dbConfig.storage
+//});
 
-let db = {};
+//let sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+//  dialect: dbConfig.dialect,
+//  dialectOptions: dbConfig.pool
+//});
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+//let db = {};
 
-db.visitante = require('./visitante')(sequelize, Sequelize);
-db.individuo = require('./individuo')(sequelize, Sequelize);
+//db.sequelize = sequelize;
+//db.Sequelize = Sequelize;
 
-module.exports = db;
+//db.conta = require('./conta')(sequelize, Sequelize);
+//db.tipoDocumento = require('./tipodocumento')(sequelize, Sequelize);
+//db.typeDocument = require('./typeDocument')(sequelize, Sequelize);
+//db.visitante = require('./visitante')(sequelize, Sequelize);
+//db.individuo = require('./individuo')(sequelize, Sequelize);
+
+//db.visitante.belongsTo(db.typeDocument, {allowNull: false});
+//db.individuo.belongsTo(db.conta, {foreignKey: 'contaId', targetKey: 'id'});
+//db.individuo.belongsTo(db.typeDocument, {allowNull: false});
+
+//module.exports = db;
 
 
 
@@ -33,8 +45,6 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 */
-
-/*
 
 const fs = require('fs');
 const path = require('path');
@@ -71,4 +81,3 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
-*/
