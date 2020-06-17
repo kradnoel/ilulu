@@ -1,10 +1,9 @@
-/*
 module.exports = {
   HOST: "localhost",
   USER: "root",
-  PASSWORD: "123456",
-  DB: "testdb",
-  dialect: "mysql",
+  PASSWORD: "",
+  DB: "iluludb",
+  dialect: "mariadb",
   pool: {
     max: 5,
     min: 0,
@@ -12,10 +11,9 @@ module.exports = {
     idle: 10000
   }
 };
-*/
 
-module.exports = {
-  dialect: 'sqlite',
-  storage: './database.sqlite'
-}
+//module.exports = {
+//  dialect: 'sqlite',
+//  storage: './database.sqlite'
+//}
 
