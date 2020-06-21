@@ -1,92 +1,195 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
+  <v-app>
+    <v-app-bar app color="primary" dark elevation="0">
+      <v-app-bar-nav-icon @click.stop="sidebarMenu = !sidebarMenu" />
+      <v-spacer></v-spacer>
+      <v-btn color="primary" class="mr-2" @click="toggleTheme">
+        {{ buttonText }}
       </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
+      <v-icon>mdi-account</v-icon>
     </v-app-bar>
-    <v-content>
-      <v-container>
-        <nuxt />
-      </v-container>
-    </v-content>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
+    <v-navigation-drawer
+      v-model="sidebarMenu"
+      app
+      floating
+      :permanent="sidebarMenu"
+      :mini-variant.sync="mini"
+    >
+      <v-list nav color="primary" dark>
+        <v-list-item dense>
           <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
+            <v-icon @click.stop="sidebarMenu = !sidebarMenu">
+              mdi-chevron-left
             </v-icon>
           </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
+          <v-list-item-content>
+            <v-list-item-title>
+              <h3 class="font-weight-thin">ILULU Dashboard</h3>
+            </v-list-item-title>
+          </v-list-item-content>
         </v-list-item>
+        <v-list-item @click="toggleMini = !toggleMini">
+          <v-list-item-avatar>
+            <v-icon left>mdi-account-outline</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content class="text-truncate">
+            Nome Sobrenome
+          </v-list-item-content>
+          <v-btn icon small>
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list>
+          <v-list-item
+            v-for="item in items"
+            :key="item.title"
+            link
+            :to="item.href"
+          >
+            <v-list-item-icon>
+              <v-icon>
+                {{ item.icon }}
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ item.title }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
       </v-list>
     </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+    <v-main>
+      <v-container class="px-4 py-0 fill-height" fluid>
+        <v-row class="fill-height">
+          <v-col>
+            <transition name="fade">
+              <nuxt />
+            </transition>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+    <v-footer class="py-3">
+      <span class="ml-auto overline">
+        ILULU &copy;2020. Developed by FireDevz
+      </span>
     </v-footer>
   </v-app>
 </template>
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition-property: opacity;
+  transition-duration: 0.25s;
+}
 
+.fade-enter-active {
+  transition-delay: 0.25s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+/*
+.v-navigation-drawer__content {
+  background-color: red;
+  background-color: #03a9f4 !important;
+  border-color: #03a9f4 !important;
+}
+*/
+
+.theme--light.v-navigation-drawer {
+  background: #eee;
+}
+
+.theme--light.v-application::-webkit-scrollbar {
+  width: 13px;
+}
+
+.theme--light.v-application::-webkit-scrollbar-track {
+  background: #e6e6e6;
+  border-left: 1px solid #dadada;
+}
+
+.theme--light.v-application::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border: solid 3px #e6e6e6;
+  border-radius: 7px;
+}
+
+.theme--light.v-application::-webkit-scrollbar-thumb:hover {
+  background: red;
+}
+
+.theme--dark.v-application::-webkit-scrollbar {
+  width: 13px;
+}
+
+.theme--dark.v-application::-webkit-scrollbar-track {
+  background: #202020;
+  border-left: 1px solid #2c2c2c;
+}
+
+.theme--dark.v-application::-webkit-scrollbar-thumb {
+  background: #3e3e3e;
+  border: solid 3px #202020;
+  border-radius: 7px;
+}
+
+.theme--dark.v-application::-webkit-scrollbar-thumb:hover {
+  background: red;
+}
+</style>
 <script>
 export default {
   data() {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
+      sidebarMenu: true,
+      toggleMini: false,
       items: [
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
+          title: 'Inicio',
+          href: '/',
+          icon: 'mdi-home-outline'
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          title: 'Contas',
+          href: '/contas',
+          icon: 'mdi-shield-account'
+        },
+        {
+          title: 'Equipamentos',
+          href: '/equipamentos',
+          icon: 'mdi-stove'
+        },
+        {
+          title: 'Visitantes',
+          href: '/visitantes',
+          icon: 'mdi-account-clock-outline'
+        },
+        {
+          title: 'Settings',
+          href: '/settings',
+          icon: 'mdi-cog-outline'
         }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      ]
+    }
+  },
+  computed: {
+    mini() {
+      return this.$vuetify.breakpoint.smAndDown || this.toggleMini
+    },
+    buttonText() {
+      return !this.$vuetify.theme.dark ? 'Go Dark' : 'Go Light'
+    }
+  },
+  methods: {
+    toggleTheme() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
     }
   }
 }

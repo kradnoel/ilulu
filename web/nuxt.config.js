@@ -62,6 +62,12 @@ module.exports = {
    */
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    defaultAssets: {
+      font: {
+        family: 'Roboto'
+      },
+      icons: 'mdi'
+    },
     theme: {
       dark: true,
       themes: {

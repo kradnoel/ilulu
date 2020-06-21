@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <div>Hello ILULU</div>
+    <div>Hello from Visitantes</div>
   </v-layout>
 </template>
 <script>
