@@ -4,7 +4,7 @@ const router = express.Router();
 
 const VisitorController = require('../controllers/VisitorController');
 
-router.get('/', VisitorController.all);
-router.get('/:id', VisitorController.one);
+router.get('/', VisitorController.index);
+router.get('/:id', VisitorController.get);
 
 module.exports = router;
