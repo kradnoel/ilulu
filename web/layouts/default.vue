@@ -3,10 +3,11 @@
     <v-app-bar app color="primary" dark elevation="0">
       <v-app-bar-nav-icon @click.stop="sidebarMenu = !sidebarMenu" />
       <v-spacer></v-spacer>
+      <v-icon>mdi-brightness-3</v-icon>
       <v-btn color="primary" class="mr-2" @click="toggleTheme">
-        {{ buttonText }}
+        <v-icon>{{ iconType }}</v-icon>
       </v-btn>
-      <v-icon>mdi-account</v-icon>
+      <v-icon>mdi-brightness-7</v-icon>
     </v-app-bar>
     <v-navigation-drawer
       v-model="sidebarMenu"
@@ -150,6 +151,7 @@ export default {
     return {
       sidebarMenu: true,
       toggleMini: false,
+      isDark: true,
       items: [
         {
           title: 'Inicio',
@@ -183,13 +185,14 @@ export default {
     mini() {
       return this.$vuetify.breakpoint.smAndDown || this.toggleMini
     },
-    buttonText() {
-      return !this.$vuetify.theme.dark ? 'Go Dark' : 'Go Light'
+    iconType() {
+      return !this.$vuetify.theme.dark ? 'mdi-ray-end' : 'mdi-ray-start'
     }
   },
   methods: {
     toggleTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+      this.isDark = !this.isDark
     }
   }
 }

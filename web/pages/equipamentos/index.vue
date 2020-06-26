@@ -29,7 +29,7 @@
                   </v-card-title>
                   <v-card-text>
                     <v-container>
-                      <span>asas</span>
+                      <v-row></v-row>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
@@ -37,7 +37,7 @@
                     <v-btn color="blue darken-1" text @click="close()">
                       cancelar
                     </v-btn>
-                    <v-btn color="blue darken-1" text>
+                    <v-btn color="blue darken-1" text @click="create()">
                       Guardar
                     </v-btn>
                   </v-card-actions>
@@ -73,6 +73,7 @@ export default {
       dialog: false,
       editedIndex: -1,
       values: [],
+      states: ['DAMAGED', 'REPAIRING', 'GOOD'],
       items: [
         {
           text: 'Dashboard',
@@ -86,10 +87,10 @@ export default {
         }
       ],
       headers: [
-        { text: '#', value: 'id', align: 'end' },
-        { text: 'Codigo', value: 'codigo', align: 'end' },
-        { text: 'Descricao', value: 'descricao', align: 'end' },
-        { text: 'Opcoes', value: 'actions', sortable: false }
+        { text: '#', value: 'id', align: 'center' },
+        { text: 'Descricao', value: 'description', align: 'center' },
+        { text: 'Estado', value: 'state', align: 'center' },
+        { text: 'Opcoes', value: 'actions', align: 'center', sortable: false }
       ]
     }
   },
@@ -110,18 +111,43 @@ export default {
   },
   methods: {
     initialize() {
-      this.values = [
-        { id: '1', codigo: '1xWz12q', descricao: 'Blalala' },
-        { id: '2', codigo: '1xWz45q', descricao: 'Blalala' },
-        { id: '3', codigo: '1xWz23q', descricao: 'Blalala' }
-      ]
+      this.getData()
+      // this.values = [
+      //  { id: '1', codigo: '1xWz12q', descricao: 'Blalala' },
+      //  { id: '2', codigo: '1xWz45q', descricao: 'Blalala' },
+      //  { id: '3', codigo: '1xWz23q', descricao: 'Blalala' }
+      // ]
     },
     close() {
       this.dialog = false
       // this.$nextTick(() => {})
     },
+    async create() {
+      const data = await this.$api.post('/equipaments/create', {
+        description: 'Elevador',
+        state: 3
+      })
+      // eslint-disable-next-line
+      console.log(data)
+    },
     editItem(item) {},
-    deleteItem(item) {}
+    deleteItem(item) {},
+    getData() {
+      this.$api
+        .get('/equipaments')
+        .then((result) => {
+          const res = result.data.data
+          this.values = res
+          // eslint-disable-next-line
+          console.log(this.values)
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error)
+        })
+      // eslint-disable-next-line
+      // console.log(data)
+    }
   }
 }
 /* export default {
@@ -146,6 +172,10 @@ export default {
         }
       },
       methods: {
+        getData() async {
+          var data = await this.$axios.get('/visitors');
+          console.log(data);
+        },
         close() {
           this.dialog = false
           this.$nextTick(() => {})
