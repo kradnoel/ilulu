@@ -4,6 +4,11 @@
       <v-container grid-list-md text-md-center fluid fill-height>
         <v-breadcrumbs :items="items" />
         <v-data-table :headers="headers" :items="values" class="elevation-1">
+          <template v-slot:item.state="{ item }">
+            <v-chip :color="getColor(item.state)" dark>
+              {{ getState(item.state) }}
+            </v-chip>
+          </template>
           <template v-slot:top>
             <v-toolbar bold color="white">
               <v-toolbar-title style="color: black;">
@@ -29,7 +34,23 @@
                   </v-card-title>
                   <v-card-text>
                     <v-container>
-                      <v-row></v-row>
+                      <v-col align="center">
+                        <v-row class="d-flex" cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="form.description"
+                            filled
+                            label="Descricao do Equipamento"
+                          />
+                        </v-row>
+                        <v-row class="d-flex" cols="12" sm="6" md="4">
+                          <v-select
+                            v-model="form.state"
+                            :items="states"
+                            filled
+                            label="Estado do Equipamento"
+                          />
+                        </v-row>
+                      </v-col>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
@@ -37,7 +58,7 @@
                     <v-btn color="blue darken-1" text @click="close()">
                       cancelar
                     </v-btn>
-                    <v-btn color="blue darken-1" text @click="create()">
+                    <v-btn color="blue darken-1" text @click="save()">
                       Guardar
                     </v-btn>
                   </v-card-actions>
@@ -73,7 +94,16 @@ export default {
       dialog: false,
       editedIndex: -1,
       values: [],
-      states: ['DAMAGED', 'REPAIRING', 'GOOD'],
+      states: ['Avariado', 'Em reparacao', 'Em bom estado'],
+      form: {
+        id: 0,
+        description: '',
+        state: 1
+      },
+      defaultForm: {
+        description: '',
+        state: 1
+      },
       items: [
         {
           text: 'Dashboard',
@@ -112,25 +142,40 @@ export default {
   methods: {
     initialize() {
       this.getData()
-      // this.values = [
-      //  { id: '1', codigo: '1xWz12q', descricao: 'Blalala' },
-      //  { id: '2', codigo: '1xWz45q', descricao: 'Blalala' },
-      //  { id: '3', codigo: '1xWz23q', descricao: 'Blalala' }
-      // ]
     },
     close() {
       this.dialog = false
-      // this.$nextTick(() => {})
-    },
-    async create() {
-      const data = await this.$api.post('/equipaments/create', {
-        description: 'Elevador',
-        state: 3
+      this.$nextTick(() => {
+        this.form = Object.assign({}, this.defaultForm)
+        this.editedIndex = -1
       })
-      // eslint-disable-next-line
-      console.log(data)
     },
-    editItem(item) {},
+    // async create() {
+    async save() {
+      const index = (this.states.indexOf(this.form.state) ?? 0) + 1
+      const data = {
+        id: this.form.id,
+        description: this.form.description,
+        state: index
+      }
+      // editing
+      if (this.editedIndex > -1) {
+        await this.$api.put('/equipaments/update', data)
+        // creating new data
+      } else {
+        await this.$api.post('/equipaments/create', data)
+      }
+      this.$nextTick(() => {
+        this.getData()
+      })
+      this.close()
+    },
+    editItem(item) {
+      this.editedIndex = this.values.indexOf(item)
+      this.form = Object.assign({}, item)
+      this.form.state = this.getState(this.form.state)
+      this.dialog = true
+    },
     deleteItem(item) {},
     getData() {
       this.$api
@@ -138,15 +183,31 @@ export default {
         .then((result) => {
           const res = result.data.data
           this.values = res
-          // eslint-disable-next-line
-          console.log(this.values)
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.log(error)
         })
-      // eslint-disable-next-line
-      // console.log(data)
+    },
+    getColor(state) {
+      switch (state) {
+        case 'GOOD':
+          return 'green'
+        case 'REPAIRING':
+          return 'orange'
+        case 'DAMAGED':
+          return 'red'
+      }
+    },
+    getState(state) {
+      switch (state) {
+        case 'GOOD':
+          return this.states[2]
+        case 'REPAIRING':
+          return this.states[1]
+        case 'DAMAGED':
+          return this.states[0]
+      }
     }
   }
 }
