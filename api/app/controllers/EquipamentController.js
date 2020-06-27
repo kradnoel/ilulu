@@ -16,16 +16,42 @@ async index(req,res) {
  },
 
 async store(req,res) {
-  var value = req.body
-  value.code = uuidv4()
+  const data = req.body
+  const equipament = {}
+  equipament.description = data.description
+  equipament.state = data.state
+  equipament.code = uuidv4()
 
-  const equipaments = await models.Equipaments.create(value)
+  const equipaments = await models.Equipaments.create(equipament)
   sendResponse(res)(
   	Promise.resolve(
   		equipaments
   	).then((equipaments) => (equipaments))
   );
 },
+
+async modify(req, res) {
+  const data = req.body
+  const equipament = await models.Equipaments.findByPk(data.id)
+
+  if (equipament == null) {
+    sendResponse(res)(
+  	  Promise.resolve(
+  		  equipament
+  	  ).then((equipaments) => (equipaments))
+    );
+  }else{
+    equipament.description = data.description
+    equipament.state = data.state
+    equipament.save()
+    sendResponse(res)(
+  	  Promise.resolve(
+  		  equipament
+  	  ).then((equipament) => (equipament))
+    );
+  }
+
+}
 
 
 
