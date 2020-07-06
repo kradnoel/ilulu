@@ -18,8 +18,8 @@ module.exports = {
         allowNull: false
       },
       role: {
-        type: Sequelize.ENUM('ADMIN', 'NORMAL'),
-        defaultValue: 'NORMAL',
+        type: Sequelize.ENUM('ADMIN', 'OPERATOR', 'CLIENT'),
+        defaultValue: 'CLIENT',
         allowNull: false
       },
       isActive: {
@@ -33,6 +33,10 @@ module.exports = {
       },
       updatedAt: {
         allowNull: false,
+        type: Sequelize.DATE
+      },
+      deletedAt: {
+        allowNull: true,
         type: Sequelize.DATE
       }
     });

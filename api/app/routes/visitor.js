@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
+const { auth } = require('../middlewares')
 const VisitorController = require('../controllers/VisitorController');
 
 router.get('/', VisitorController.index);

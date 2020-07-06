@@ -2,11 +2,13 @@
 const express = require('express');
 const router = express.Router();
 
+const { auth } = require('../middlewares')
 const EquipamentController = require('../controllers/EquipamentController');
 
-router.get('/',EquipamentController.index);
-router.post('/create', EquipamentController.store)
-router.put('/update', EquipamentController.modify)
+
+router.get('/', auth, EquipamentController.index);
+router.post('/create', auth, EquipamentController.store)
+router.put('/update', auth, EquipamentController.modify)
 
 
 module.exports = router;

@@ -9,6 +9,15 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = {
 
 async index(req,res) {
+  const user = req.user;
+
+  //console.log(user);
+
+  //if(user.role == 'CLIENT') {
+  //  console.log(`Cliente leshe`);
+  // }
+
+
   sendResponse(res)(models.Equipaments.findAll({
   	attributes: ['id', 'description', 'code', 'state'],
   	order: ['state']
@@ -16,6 +25,7 @@ async index(req,res) {
  },
 
 async store(req,res) {
+
   const data = req.body
   const equipament = {}
   equipament.description = data.description

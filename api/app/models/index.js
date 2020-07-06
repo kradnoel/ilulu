@@ -50,16 +50,41 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require(__dirname + '/../config');
+
+const { Logger } = require(__dirname + '/../logger');
+
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+
+sequelize = new Sequelize(config.DATABASE.NAME, config.DATABASE.USERNAME, config.DATABASE.PASSWORD, {
+  username: config.DATABASE.USERNAME,
+  password: config.DATABASE.PASSWORD,
+  database: config.DATABASE.NAME,
+  host: config.DATABASE.HOSTNAME,
+  dialect: config.DATABASE.DIALECT,
+  dialectOptions: {
+    timezone: 'Etc/GMT+2',
+  },
+  define: {
+    charset: 'utf8',
+    dialectOptions: {
+      collate: 'utf8_general_ci'
+    },
+    timestamps: true
+  },
+  sync: {},
+  //logging: (msg) => logger.info(msg),
+  logging: (msg) => Logger.verbose(
+    `\x1b[36m[sequelize]\x1b[0m ${msg}`,
+  ),
+});
+
+//sequelize = new Sequelize(config.DATABASE.NAME, config.DATABASE.USERNAME, config.DATABASE.PASSWORD, {
+//  host: config.DATABASE.HOSTNAME,
+//  dialect: config.DATABASE.DIALECT
+//});
 
 fs
   .readdirSync(__dirname)
