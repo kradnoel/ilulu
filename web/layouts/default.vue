@@ -59,6 +59,9 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item @click="logoutUser">
+            <v-icon>md-power</v-icon>
+          </v-list-item>
         </v-list>
       </v-list>
     </v-navigation-drawer>
@@ -147,6 +150,7 @@
 </style>
 <script>
 export default {
+  middleware: 'authenticated',
   data() {
     return {
       sidebarMenu: true,
@@ -193,6 +197,10 @@ export default {
     toggleTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark
       this.isDark = !this.isDark
+    },
+    logoutUser() {
+      this.$store.dispatch('logout')
+      this.$nuxt.$router.replace({ path: '/login' })
     }
   }
 }
