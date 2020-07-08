@@ -1,5 +1,8 @@
 // Require dependencies
 const _ = require('lodash')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
+const config = require('./config')
 
 ///////////////////////////////////////////////////////////////////////////////
 // UTILITY FUNCTIONS
@@ -40,15 +43,54 @@ const composeAsync = (...fns) => arg => {
 **/
 const sendResponse = (res) => async (request) => {
   return await request
-    .then(data => res.json({ status: "success", code: res.statusCode, data }))
+    .then(data => {
+      if(res.statusCode === 200) {
+        res.json({ status: "sucess", code: res.statusCode, data })
+        return
+      }else{
+        res.json({ status: "error", code: res.statusCode, data })
+      }
+    })
     .catch(({ status: code = 500 }) =>
-      res.status(code).json({ status: "failure", code, message: code == 404 ? `Not found!`: `Request failure!` })
+      res.status(code).json({ status: "error", code, message: code == 404 ? `Not found!`: `Request failure!` })
     )
+}
+
+/**
+ _ Class that handle password encryption and password compare
+**/
+
+class Password {
+  /**
+ _ Recieve password string
+ _ and return hashed password.
+**/
+  static hash = async (password) => {
+    const hashed = await bcrypt.hash(password, 10)
+    return hashed
+  }
+
+  static compare = async (candidatePassword, hashedPassword) => {
+    const isEqual = await bcrypt.compare(candidatePassword, hashedPassword)
+    return isEqual
+  }
+}
+
+/**
+ _ Recieve Object
+ _ and return jwt token.
+**/
+const JwtAccessToken = (value) => {
+  const {username, role } = value
+  const token = jwt.sign({username: username, role: role}, config.JWT.SECRET)
+  return token
 }
 
 module.exports = {
   compose,
   composeAsync,
   sendResponse,
-  withoutNulls
+  withoutNulls,
+  Password,
+  JwtAccessToken
 }
