@@ -7,7 +7,7 @@ const equipament = require('./equipament');
 const account = require('./account');
 
 routes.use("/visitors", visitor);
-routes.use("/Equipaments", equipament);
-routes.use("/Accounts", account);
+routes.use("/equipaments", equipament);
+routes.use("/accounts", account);
 
 module.exports = routes;
