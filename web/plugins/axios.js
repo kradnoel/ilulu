@@ -1,4 +1,4 @@
-export default function({ $axios, redirect, $store }, inject) {
+export default function({ $axios, redirect, store }, inject) {
   // Create handler config verification
   const isHandlerDisabled = (config = {}) => {
     return (
@@ -42,12 +42,12 @@ export default function({ $axios, redirect, $store }, inject) {
   api.setBaseURL('http://localhost:3001')
   api.onRequest((config) => {
     // eslint-disable-next-line
-    console.log('Making request to ' + config.url)
+    // console.log('Making request to ' + config.url)
     // eslint-disable-next-line
-    console.log(`isHandlerDisabled: ${isHandlerDisabled(config)}`)
+    // console.log(`isHandlerDisabled: ${isHandlerDisabled(config)}`)
   })
   api.onResponse((config) => {
-    console.log(`Making responste`)
+    // console.log(`Making responste`)
   })
   api.interceptors.response.use(
     (response) => successHandler(response),
@@ -55,7 +55,7 @@ export default function({ $axios, redirect, $store }, inject) {
   )
   api.interceptors.request.use((config) => {
     if (!isHandlerDisabled(config)) {
-      config.headers.Autorization = `Bearer ${$store.getters.getToken}`
+      config.headers.Authorization = `Bearer ${store.getters.getToken}`
     }
     config.headers.Accept = `application/json; charset=utf-8`
     return config

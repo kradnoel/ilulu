@@ -60,7 +60,16 @@
             </v-list-item-content>
           </v-list-item>
           <v-list-item @click="logoutUser">
-            <v-icon>md-power</v-icon>
+            <v-list-item-icon>
+              <v-icon>
+                mdi-power
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                Logout
+              </v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
         </v-list>
       </v-list>
@@ -149,10 +158,13 @@
 }
 </style>
 <script>
+import { mdiMenu } from '@mdi/js'
+
 export default {
   middleware: 'authenticated',
   data() {
     return {
+      mdi_menu: mdiMenu,
       sidebarMenu: true,
       toggleMini: false,
       isDark: true,

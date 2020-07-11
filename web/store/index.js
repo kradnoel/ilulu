@@ -44,17 +44,14 @@ export const mutations = {
 export const actions = {
   async login({ commit }, data) {
     await this.$api
-      .post('/Accounts/login', data, { handlerDisabled: true })
+      .post('/accounts/login', data, { handlerDisabled: true })
       .then((res) => {
-        // eslint-disable-next-line
-        console.log(res)
         if (res.status === 200) {
           commit('setToken', res.data.data)
         }
         return Promise.resolve()
       })
       .catch((e) => {
-        console.log(e.response)
         const response = e.response
         commit('setAlertActive', true)
         commit(

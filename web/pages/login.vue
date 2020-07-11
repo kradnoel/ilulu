@@ -2,7 +2,13 @@
   <v-container>
     <v-layout wrap>
       <v-flex sm12 md6 offset-md3>
-        <v-alert v-model="isAlertActive" :type="alertType" dismissible>
+        <v-alert
+          v-model="isAlertActive"
+          :type="alertType"
+          :close-icon="mdi_close"
+          :icon="mdi_info"
+          dismissible
+        >
           {{ alertMessage }}
         </v-alert>
         <v-card elevation="4" light tag="section">
@@ -30,7 +36,7 @@
               :large="$vuetify.breakpoint.smAndUp"
               @click="login"
             >
-              <v-icon left>mdi-lock</v-icon>
+              <v-icon left>{{ mdi_lock }}</v-icon>
               Login
             </v-btn>
           </v-card-actions>
@@ -54,10 +60,16 @@
 }
 </style>
 <script>
+import { mdiLock, mdiClose, mdiInformationOutline } from '@mdi/js'
+
 export default {
   layout: 'basic',
+  middleware: 'non-authenticated',
   data() {
     return {
+      mdi_info: mdiInformationOutline,
+      mdi_close: mdiClose,
+      mdi_lock: mdiLock,
       form: {
         username: '',
         password: ''
