@@ -7,5 +7,6 @@ const VisitorController = require('../controllers/VisitorController');
 
 router.get('/', VisitorController.index);
 router.get('/:id', VisitorController.get);
+router.post('/create', VisitorController.store);
 
 module.exports = router;
