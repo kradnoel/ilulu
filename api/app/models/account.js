@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
 
   Account.associate = function(models) {
     // associations can be defined here
+    Account.hasOne(models.Residents)
+    Account.hasOne(models.Operators)
   };
   return Account;
 };

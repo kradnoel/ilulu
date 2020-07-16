@@ -45,7 +45,7 @@ const sendResponse = (res) => async (request) => {
   return await request
     .then(data => {
       if(res.statusCode === 200) {
-        res.json({ status: "sucess", code: res.statusCode, data })
+        res.json({ status: "success", code: res.statusCode, data })
         return
       }else{
         res.json({ status: "error", code: res.statusCode, data })

@@ -13,11 +13,36 @@ module.exports = {
         defaultValue: 'OWNER',
         allowNull: false
       },
-      PersonId: {
+      firstName: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      lastName: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      docNumber: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      birthDate: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      AccountId: {
+        type: Sequelize.INTEGER,
+        defaultValue: null,
+        allowNull: true,
+        references: {
+          model: 'Accounts',
+          key: 'id'
+        }
+      },
+      TypeDocumentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Persons',
+          model: 'TypeDocuments',
           key: 'id'
         }
       },
