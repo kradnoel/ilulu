@@ -8,6 +8,9 @@ export const state = () => ({
     active: false,
     message: '',
     type: 'success'
+  },
+  accounts: {
+    values: []
   }
 })
 
@@ -18,7 +21,8 @@ export const getters = {
   getToken: (state) => state.auth.token,
   isAlertActive: (state) => state.alert.active,
   alertType: (state) => state.alert.type,
-  alertMessage: (state) => state.alert.message
+  alertMessage: (state) => state.alert.message,
+  Accounts: (state) => state.accounts.values
 }
 
 export const mutations = {
@@ -38,6 +42,9 @@ export const mutations = {
   logoutUser(state) {
     localStorage.removeItem('access_token')
     state.auth.token = null
+  },
+  setAccounts(state, data) {
+    state.accounts.values = data
   }
 }
 
@@ -64,5 +71,73 @@ export const actions = {
   },
   logout({ commit }) {
     commit('logoutUser')
+  },
+  async createAccount({ commit }, data) {
+    await this.$api
+      .post('accounts/register', data)
+      .then((res) => {
+        const response = res
+        if (res.status === 200) {
+          commit('setAlertActive', true)
+          commit(
+            'setAlertMessage',
+            `${response.data.code} - ${response.data.data}`
+          )
+          commit('setAlertType', response.data.status)
+        }
+        return Promise.resolve()
+      })
+      .catch((e) => {
+        const response = e.response
+        commit('setAlertActive', true)
+        commit(
+          'setAlertMessage',
+          `${response.data.code} - ${response.data.data}`
+        )
+        commit('setAlertType', response.data.status)
+        return Promise.reject(response)
+      })
+  },
+  async fetchAccounts({ commit }) {
+    await this.$api
+      .get('/accounts')
+      .then((res) => {
+        const data = res.data.data
+        data.forEach((item) => {
+          if (item.isActive === false) {
+            item.isActive = 'DESACTIVO'
+          } else {
+            item.isActive = 'ACTIVO'
+          }
+        })
+        commit('setAccounts', data)
+        return Promise.resolve()
+      })
+      .catch((e) => {
+        commit('setAccounts', [])
+        return Promise.reject(e)
+      })
+  },
+  async deleteAccount({ commit, dispatch }, data) {
+    await this.$api
+      .delete('/accounts/delete', { params: data })
+      .then((res) => {
+        dispatch('fetchAccounts')
+        return Promise.resolve(res)
+      })
+      .catch((e) => {
+        return Promise.reject(e)
+      })
+  },
+  async updateAccount({ commit, dispatch }, data) {
+    await this.$api
+      .put('/accounts/update', data)
+      .then((res) => {
+        dispatch('fetchAccounts')
+        return Promise.resolve(res)
+      })
+      .catch((e) => {
+        return Promise.reject(e)
+      })
   }
 }

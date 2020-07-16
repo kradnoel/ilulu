@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark elevation="0">
+    <v-app-bar app color="primary" elevation="0">
       <v-app-bar-nav-icon @click.stop="sidebarMenu = !sidebarMenu" />
       <v-spacer></v-spacer>
       <v-icon>mdi-brightness-3</v-icon>
