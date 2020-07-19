@@ -17,7 +17,7 @@
     "format": "^0.2.2",
     "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mariadb": "^2.4.1",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
