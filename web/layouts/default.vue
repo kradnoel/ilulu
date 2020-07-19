@@ -185,6 +185,16 @@ export default {
           icon: 'mdi-stove'
         },
         {
+          title: 'Operadores',
+          href: '/operadores',
+          icon: 'mdi-shield-account'
+        },
+        {
+          title: 'Residentes',
+          href: '/residentes',
+          icon: 'mdi-shield-account'
+        },
+        {
           title: 'Visitantes',
           href: '/visitantes',
           icon: 'mdi-account-clock-outline'

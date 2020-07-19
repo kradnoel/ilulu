@@ -1,3 +1,7 @@
+'use strict'
+
+// import JWT from 'jsonwebtoken'
+
 export const state = () => ({
   auth: {
     status: '',
@@ -11,6 +15,22 @@ export const state = () => ({
   },
   accounts: {
     values: []
+  },
+  operators: {
+    values: [],
+    item: {}
+  },
+  orphanAccounts: {
+    values: []
+  },
+  orphanClientAccounts: {
+    values: []
+  },
+  typeDocuments: {
+    values: []
+  },
+  residents: {
+    values: []
   }
 })
 
@@ -22,7 +42,13 @@ export const getters = {
   isAlertActive: (state) => state.alert.active,
   alertType: (state) => state.alert.type,
   alertMessage: (state) => state.alert.message,
-  Accounts: (state) => state.accounts.values
+  Accounts: (state) => state.accounts.values,
+  Operators: (state) => state.operators.values,
+  OrphanAccounts: (state) => state.orphanAccounts.values,
+  OrphanClientAccounts: (state) => state.orphanClientAccounts.values,
+  TypeDocuments: (state) => state.typeDocuments.values,
+  OperatorItem: (state) => state.operators.item,
+  Residents: (state) => state.residents.values
 }
 
 export const mutations = {
@@ -45,6 +71,24 @@ export const mutations = {
   },
   setAccounts(state, data) {
     state.accounts.values = data
+  },
+  setOperators(state, data) {
+    state.operators.values = data
+  },
+  setOrphanAccounts(state, data) {
+    state.orphanAccounts.values = data
+  },
+  setOrphanClientAccounts(state, data) {
+    state.orphanClientAccounts.values = data
+  },
+  setTypeDocuments(state, data) {
+    state.typeDocuments.values = data
+  },
+  setOperatorItem(state, data) {
+    state.operators.item = data
+  },
+  setResidents(state, data) {
+    state.residents.values = data
   }
 }
 
@@ -135,6 +179,130 @@ export const actions = {
       .then((res) => {
         dispatch('fetchAccounts')
         return Promise.resolve(res)
+      })
+      .catch((e) => {
+        return Promise.reject(e)
+      })
+  },
+  async fetchOrphanAccounts({ commit }) {
+    await this.$api
+      .get('/accounts/search')
+      .then((res) => {
+        // const data = res.data.data
+        // console.log(data)
+
+        const accounts = res.data.data
+        const data = []
+        accounts.forEach((account) => data.push({ text: account.username }))
+        commit('setOrphanAccounts', data)
+        return Promise.resolve()
+      })
+      .catch((e) => {
+        return Promise.reject(e)
+      })
+  },
+  async fetchOrphanClientAccounts({ commit }) {
+    await this.$api
+      .get('/accounts/clients')
+      .then((res) => {
+        // const data = res.data.data
+        // console.log(data)
+
+        const accounts = res.data.data
+        const data = []
+        accounts.forEach((account) => data.push({ text: account.username }))
+        commit('setOrphanClientAccounts', data)
+        return Promise.resolve()
+      })
+      .catch((e) => {
+        return Promise.reject(e)
+      })
+  },
+  async fetchTypeDocuments({ commit }) {
+    await this.$api
+      .get('/typeDocuments')
+      .then((res) => {
+        const typeDocuments = res.data.data
+        const data = []
+        typeDocuments.forEach((typeDocument) => {
+          data.push({ text: typeDocument.type })
+        })
+        commit('setTypeDocuments', data)
+        return Promise.resolve()
+      })
+      .catch((e) => {
+        return Promise.reject(e)
+      })
+  },
+  async fetchOperators({ commit }) {
+    await this.$api
+      .get('/operators')
+      .then((res) => {
+        const data = res.data.data
+        commit('setOperators', data)
+        return Promise.resolve()
+      })
+      .catch((e) => {
+        return Promise.reject(e)
+      })
+  },
+  async createResident({ commit }, data) {
+    await this.$api
+      .post('/residents/create', data)
+      .then((res) => {
+        const response = res
+        if (res.status === 200) {
+          commit('setAlertActive', true)
+          commit(
+            'setAlertMessage',
+            `${response.data.code} - ${response.data.data}`
+          )
+          commit('setAlertType', response.data.status)
+        }
+        return Promise.resolve()
+      })
+      .catch((e) => {
+        const response = e.response
+        commit('setAlertActive', true)
+        commit(
+          'setAlertMessage',
+          `${response.data.code} - ${response.data.data}`
+        )
+        commit('setAlertType', response.data.status)
+        return Promise.reject(response)
+      })
+  },
+  async deleteResident({ commit, dispatch }, data) {
+    await this.$api
+      .delete('/residents/delete', { params: data })
+      .then((res) => {
+        dispatch('fetchResidents')
+        return Promise.resolve(res)
+      })
+      .catch((e) => {
+        return Promise.reject(e)
+      })
+  },
+  async fetchResidents({ commit }) {
+    await this.$api
+      .get('/residents')
+      .then((res) => {
+        const data = res.data.data
+        commit('setResidents', data)
+        return Promise.resolve()
+      })
+      .catch((e) => {
+        return Promise.reject(e)
+      })
+  },
+  async fetchOperatorItem({ commit }, data) {
+    const url = `/operators/${data.id}`
+    await this.$api
+      .get(url)
+      .then((res) => {
+        const data = res.data.data
+        commit('setOperatorItem', data)
+        return Promise.resolve()
       })
       .catch((e) => {
         return Promise.reject(e)
