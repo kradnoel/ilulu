@@ -4,6 +4,7 @@ const models = require('../models');
 const Language = require('../lang.js')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const _ = require('lodash')
 
 
 module.exports = {
@@ -14,6 +15,122 @@ module.exports = {
   	    order: ['id']
   	  }));
    },
+
+   async getRoleClientAccounts(req, res) {
+     const user = req.user
+    if (user.role === "OPERATOR" || user.role === "ADMIN") {
+
+      let tx;
+      const orphanClientAccounts = [];
+
+      try {
+        tx = await models.sequelize.transaction()
+
+        const accounts = await models.Accounts.findAll({
+        attributes: ['id', 'username', 'role', 'isActive'],
+      	order: ['id'],
+      	include: [
+          {
+            model: models.Residents,
+            attributes: ['id', 'firstName', 'lastName', 'type'],
+            required: false
+          },
+          {
+            model: models.Operators,
+            attributes: ['id', 'firstName', 'lastName'],
+            //required: false
+          }
+        ],
+        where: {
+          role: 'CLIENT'
+        }
+      },{transaction: tx});
+
+      accounts.forEach((account) => {
+        if (_.isNull(account.Resident) && _.isNull(account.Operator)) {
+          orphanClientAccounts.push(account)
+        }
+      })
+
+      await tx.commit()
+
+      sendResponse(res)(
+		    Promise.resolve(orphanClientAccounts).then((orphanClientAccounts) => (orphanClientAccounts))
+		  );
+
+      } catch (err) {
+        await tx.rollback()
+        console.log(err)
+        const message = `${err.Error}`;
+        res.statusCode = 400
+	      sendResponse(res)(
+		      Promise.resolve(message).then((message) => (message))
+		    );
+      }
+
+    } else {
+      const message = `${Language.OPERATOR_FETCH_ERROR}`;
+	    res.statusCode = 400
+	    sendResponse(res)(
+		    Promise.resolve(message).then((message) => (message))
+		  );
+    }
+   },
+   async search(req, res) {
+    const user = req.user
+    if (user.role === "OPERATOR" || user.role === "ADMIN") {
+      let tx;
+      const orphanAccounts = [];
+
+      try {
+        tx = await models.sequelize.transaction()
+
+        const accounts = await models.Accounts.findAll({
+          attributes: ['id', 'username', 'role', 'isActive'],
+      	  order: ['id'],
+      	  include: [
+            {
+              model: models.Residents,
+              attributes: ['id', 'firstName', 'lastName', 'type'],
+              required: false
+            },
+            {
+              model: models.Operators,
+              attributes: ['id', 'firstName', 'lastName'],
+              //required: false
+            }
+          ]
+        },{transaction: tx});
+
+        accounts.forEach((account) => {
+           if (_.isNull(account.Resident) && _.isNull(account.Operator)) {
+             orphanAccounts.push(account)
+           }
+        })
+
+        await tx.commit()
+
+        sendResponse(res)(
+		      Promise.resolve(orphanAccounts).then((orphanAccounts) => (orphanAccounts))
+		    );
+
+      } catch (err) {
+        await tx.rollback()
+        console.log(err)
+        const message = `${err.Error}`;
+        res.statusCode = 400
+	      sendResponse(res)(
+		      Promise.resolve(message).then((message) => (message))
+		    );
+      }
+    } else {
+      const message = `${Language.OPERATOR_FETCH_ERROR}`;
+	    res.statusCode = 400
+	    sendResponse(res)(
+		    Promise.resolve(message).then((message) => (message))
+		  );
+    }
+  },
 
   // Registra uma nova conta. So pode registrar quem e Operador ou Administrador, so para web
   async register(req, res) {

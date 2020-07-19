@@ -25,6 +25,7 @@ class Language {
   // Equipaments
 
   // Operators
+  static OPERATOR_FETCH_ERROR = 'O utilizador nao tem permissoes para visualizar Operadores'
 
   // Residents
 

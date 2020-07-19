@@ -6,6 +6,8 @@ const { auth } = require('../middlewares')
 const AccountController = require('../controllers/AccountController');
 
 router.get('/', auth, AccountController.index);
+router.get('/clients', auth, AccountController.getRoleClientAccounts);
+router.get('/search', auth, AccountController.search);
 router.post('/register', auth, AccountController.register);
 router.post('/login', AccountController.login);
 router.put('/update', auth, AccountController.modify);
