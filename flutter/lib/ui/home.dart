@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ilulu_mobile/core/bloc/bloc.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -18,7 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Text('Chapter 01 - Project Structure'),
+        child: Text('Ilulu - Mobile'),
       ),
     );
   }
